@@ -11,8 +11,6 @@ use clap::Parser;
 use env_logger::Env;
 use std::fs;
 
-const ARCHS: &[&str] = &["x86_64", "any"];
-
 fn main() -> Result<()> {
     let args = Args::parse();
 
@@ -44,20 +42,29 @@ fn main() -> Result<()> {
         let srcinfo = fs::read_to_string(&srcinfo_path)?;
 
         // read pkginfo
-        for pkg in srcinfo::parse(&srcinfo)? {
-            if !ARCHS.iter().any(|a| *a == pkg.arch) {
-                debug!("Skipping unsupported architecture: {pkg:?}");
+        for srcinfo in srcinfo::parse(&srcinfo)? {
+            if ![&args.arch, "any"].iter().any(|a| *a == srcinfo.arch) {
+                debug!("Skipping unsupported architecture: {srcinfo:?}");
                 continue;
             }
-            info!("pkg/srcinfo: {pkg:?}");
-            let (meta, pkg) = pkginfo::load(&path, &pkg)?;
+            info!("pkg/srcinfo: {srcinfo:?}");
+            let (meta, pkg) = pkginfo::load(&path, &srcinfo)?;
             info!("pkg/pkginfo: {pkg:?}");
             db.insert(&meta, &pkg)?;
+
+            let filename = srcinfo.filename();
+            let src_path = path.join(&filename);
+            let output_path = args.output.join(&filename);
+            if !output_path.exists() {
+                fs::copy(&src_path, &output_path)
+                    .with_context(|| format!("Failed to copy {src_path:?} -> {output_path:?}"))?;
+            }
         }
     }
 
-    let mut output = fs::File::create(&args.output)
-        .with_context(|| format!("Failed to open output file: {:?}", args.output))?;
+    let output_path = args.output.join(format!("{}.db", args.name));
+    let mut output = fs::File::create(&output_path)
+        .with_context(|| format!("Failed to open output file: {:?}", output_path))?;
     db.write_into(&mut output)
         .context("Failed to write database")?;
 
