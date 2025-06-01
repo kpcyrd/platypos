@@ -1,0 +1,8 @@
+*.asc
+*.log
+*.pkg.tar.zst
+*.sig
+*.tar.bz2
+*.tar.gz
+*.tar.xz
+*.tar.zst

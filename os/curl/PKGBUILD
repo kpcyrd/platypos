@@ -1,0 +1,128 @@
+# Maintainer: Dave Reisner <dreisner@archlinux.org>
+# Contributor: Angel Velasquez <angvp@archlinux.org>
+# Contributor: Eric Belanger <eric@archlinux.org>
+# Contributor: Lucien Immink <l.immink@student.fnt.hvu.nl>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+
+pkgname=curl
+pkgver=8.14.0
+pkgrel=2
+pkgdesc='command line tool and library for transferring data with URLs'
+arch=('x86_64')
+url='https://curl.se/'
+license=('MIT')
+depends=('ca-certificates'
+         'brotli' 'libbrotlidec.so'
+         'libidn2' 'libidn2.so'
+         'libnghttp2' 'libnghttp2.so'
+         'libpsl' 'libpsl.so'
+         'librustls' 'librustls.so'
+         'zlib' 'libz.so'
+         'zstd' 'libzstd.so')
+makedepends=(
+  'autoconf'
+  'automake'
+  'git'
+  'less'
+  'libtool'
+)
+validpgpkeys=('27EDEAF22F3ABCEB50DB9A125CC908FDB71E12C2') # Daniel Stenberg
+source=("git+https://github.com/curl/curl.git#tag=curl-${pkgver//./_}?signed")
+sha512sums=('2d1103904a7e876db02fc42591743c9d51eacaf8a66becd612875f8053102ec207456efeab6ff9f0197ccb516423566355115916991e1eff61499d3031763140')
+
+_backports=(
+  # multi: fix add_handle resizing
+  'd16ccbd55de80c271fe822f4ba8b6271fd9166ff'
+
+  # http: fail early when rewind of input failed when following redirects
+  '71bb004c29631117ab03d90a4214d1515da5a895'
+)
+
+_reverts=(
+)
+
+prepare() {
+  cd "$pkgbase"
+
+  local _c
+  for _c in "${_backports[@]}"; do
+    if [[ $_c == *..* ]]; then
+      git log --oneline --reverse "${_c}"
+    else
+      git log --oneline -1 "${_c}"
+    fi
+    git cherry-pick -n -m1 "${_c}"
+  done
+  for _c in "${_reverts[@]}"; do
+    git log --oneline -1 "${_c}"
+    git revert -n "${_c}"
+  done
+
+  # no '-DEV' in version, release date from tagged commit...
+  sed -i \
+    -e "/\WLIBCURL_VERSION\W/c #define LIBCURL_VERSION \"${pkgver}\"" \
+    -e "/\WLIBCURL_TIMESTAMP\W/c #define LIBCURL_TIMESTAMP \"$(git log -1 --format=%cs "curl-${pkgver//./_}")\"" \
+    include/curl/curlver.h
+
+  autoreconf -fi
+}
+
+build() {
+  local _configure_options=(
+    --prefix='/usr'
+    --mandir='/usr/share/man'
+    --disable-ldap
+    --disable-ldaps
+    --disable-manual
+    --enable-ipv6
+    --enable-threaded-resolver
+    --enable-websockets
+    --without-gssapi
+    --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt'
+  )
+
+  mkdir build-curl
+
+  # build curl
+  cd "${srcdir}"/build-curl
+
+  "${srcdir}/${pkgbase}"/configure \
+    "${_configure_options[@]}" \
+    --enable-versioned-symbols \
+    --with-fish-functions-dir=/usr/share/fish/vendor_completions.d/ \
+    --with-rustls \
+    --without-openssl \
+    --with-zsh-functions-dir=/usr/share/zsh/site-functions/
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+check() {
+  cd build-curl
+  # -v: verbose
+  # -a: keep going on failure (so we see everything which breaks, not just the first failing test)
+  # -k: keep test files after completion
+  # -am: automake style TAP output
+  # -p: print logs if test fails
+  # -j: parallelization
+  # disable test 433, since it requires the glibc debug info
+  #make TFLAGS="-v -a -k -p -j$(nproc) !433" test-nonflaky
+}
+
+package() {
+  provides=('libcurl.so')
+  replaces=('wcurl')
+  conflicts=('wcurl')
+
+  cd build-curl
+
+  make DESTDIR="${pkgdir}" install
+  make DESTDIR="${pkgdir}" install -C scripts
+
+  cd "${srcdir}/${pkgname}"
+
+  # license
+  install -Dt "${pkgdir}/usr/share/licenses/${pkgname}" -m0644 COPYING
+}
+
+# vim: ts=2 sw=2 et:

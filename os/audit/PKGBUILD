@@ -1,0 +1,123 @@
+# Maintainer: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Maintainer: David Runge <dvzrv@archlinux.org>
+# Contributor: Christian Rebischke <Chris.Rebischke@archlinux.org>
+# Contributor: Daniel Micay <danielmicay@gmail.com>
+# Contributor: <kang@insecure.ws>
+# Contributor: Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
+# Contributor: Connor Behan <connor.behan@gmail.com>
+# Contributor: henning mueller <henning@orgizm.net>
+
+pkgbase=audit
+_name=audit-userspace
+pkgname=(audit)
+pkgver=4.0.3
+pkgrel=1
+pkgdesc='Userspace components of the audit framework'
+url='https://people.redhat.com/sgrubb/audit'
+arch=(x86_64)
+license=(
+  GPL-2.0-or-later
+  LGPL-2.0-or-later
+)
+makedepends=(
+  apparmor
+  autoconf
+  automake
+  glibc
+  libcap-ng
+  libldap
+  libtool
+  linux-api-headers
+  swig
+)
+options=(emptydirs)
+source=(
+  https://github.com/linux-audit/$_name/archive/v$pkgver/$_name-v$pkgver.tar.gz
+  $pkgbase.tmpfiles
+  $pkgbase-4.0-executable_paths.patch
+)
+sha512sums=('a20d2f832632fa844764086aac98c80f7fcb120ceeaae7472248e04eec0493981e31fd59f22c3f0dbff81ccbcd132b8297812f2b4cdb87b866c59aedf3611342'
+            '1750741755f58d0ae19ed2c30e136d05560dc12ec613a502bad12f47c6b70432d30b3a16f3f1574c8433ad2701428d1c1d567a4d3b55be19abac300310c831d9'
+            '78d0289c5ea37bf28fecf43db7d83f1f754f2ac58a70667c8d720b0e5be51afca35f86861ba1abdea4833a4be8fbcfc05801240a2493904ab8ea4d2be5ca32e7')
+b2sums=('35c5c45773b931d0751abf7e22130ce1217f96acb1192bd9351f54dc4f34e9a94fc42392287fd241bc76e7fac06b30e96ea34bfd7302a37a10851bd1e36cccc5'
+        '549ebbbc9e43277d44d0dc5bfd8ca2926628322d898479171b2707dd004968d036ef792b442548af90ad56dea868a72c88b5cf3bb93ea70cb8bbed82747ad9b5'
+        '4cfeb5d47218e77d693d2645de49c9867abe10bf185b1315d526d0410e93a8c5967cdff107eefbefcd4760c6ccbdd010bd47e2ef1cb8b3970f86910f1ba50e3f')
+
+prepare() {
+  # use /usr and /bin merge compatible paths in configs and services
+  patch -Np1 -d $pkgbase-userspace-$pkgver -i ../$pkgbase-4.0-executable_paths.patch
+
+  cd $_name-$pkgver
+  autoreconf -fiv
+}
+
+build() {
+  local configure_options=(
+    --enable-gssapi-krb5=no
+    --enable-systemd=yes
+    --enable-zos-remote
+    --libexecdir=/usr/lib/audit
+    --prefix=/usr
+    --runstatedir=/run
+    --sbindir=/usr/bin
+    --sysconfdir=/etc
+    --with-apparmor=yes
+    --with-io_uring=yes
+    --with-libcap-ng=yes
+    --with-python3=no
+  )
+
+  cd $_name-$pkgver
+  ./configure "${configure_options[@]}"
+  # prevent excessive overlinking due to libtool
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+package_audit() {
+  depends=(
+    glibc
+    libcap-ng libcap-ng.so
+  )
+  optdepends=(
+    'libldap: for audispd-zos-remote'
+    'sh: for augenrules'
+  )
+  provides=(
+    libaudit.so
+    libauparse.so
+  )
+  backup=(
+    etc/libaudit.conf
+    etc/audit/audit-stop.rules
+    etc/audit/auditd.conf
+    etc/audit/audisp-remote.conf
+    etc/audit/zos-remote.conf
+    etc/audit/plugins.d/af_unix.conf
+    etc/audit/plugins.d/au-remote.conf
+    etc/audit/plugins.d/audispd-zos-remote.conf
+    etc/audit/plugins.d/syslog.conf
+  )
+
+  # INSTALL_DATA="install" to work around https://github.com/uutils/coreutils/issues/8033
+  make DESTDIR="$pkgdir" INSTALL_DATA="install" install -C $_name-$pkgver
+
+  install -vDm 644 $_name-$pkgver/{{README,SECURITY}.md,ChangeLog} -t "$pkgdir/usr/share/doc/$pkgname/"
+
+  # add rules.d dir to satisfy augenrules
+  install -vdm 755 "$pkgdir/etc/audit/rules.d/"
+  # add config dir for audisp
+  install -vdm 755 "$pkgdir/etc/audisp"
+
+  # add factory files
+  install -vdm 755 "$pkgdir/usr/share/factory/"
+  cp -av "$pkgdir/etc" "$pkgdir/usr/share/factory/"
+
+  # add tmpfiles.d integration for factory files and file permissions
+  install -vDm 644 $pkgbase.tmpfiles "$pkgdir/usr/lib/tmpfiles.d/$pkgbase.conf"
+
+  # remove legacy files
+  rm -frv "$pkgdir/usr/lib/audit"
+}
+
+# vim: ts=2 sw=2 et:

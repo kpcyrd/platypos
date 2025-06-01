@@ -1,0 +1,43 @@
+# Maintainer: kpcyrd <kpcyrd[at]archlinux[dot]org>
+
+pkgname=librustls
+pkgver=0.15.0
+pkgrel=1
+pkgdesc="Use rustls from languages other than Rust"
+arch=('x86_64')
+license=('Apache-2.0' 'MIT')
+url='https://github.com/rustls/rustls-ffi'
+depends=(
+  gcc-libs
+  glibc
+)
+makedepends=(
+  cargo-c
+  rust
+)
+provides=(
+  librustls.so
+  rustls-ffi
+)
+options=(!lto)
+source=(https://github.com/rustls/rustls-ffi/archive/v${pkgver}/${pkgname}-${pkgver}.tar.gz)
+sha256sums=('db3939a58677e52f03603b332e00347b29aa57aa4012b5f8a7e779ba2934b18b')
+b2sums=('1b45c492fdbb79527d97e8a84143e4435198af095117ba5bdabe8d72d77adf65ba3b59976b3c8510c9d936858e076269d51ccff9ab71d407a916ac58206be8cd')
+
+prepare() {
+  cd rustls-ffi-${pkgver}
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+  cd rustls-ffi-${pkgver}
+  cargo cbuild --release --frozen --prefix=/usr
+}
+
+package() {
+  cd rustls-ffi-${pkgver}
+  cargo cinstall --release --frozen --prefix /usr --destdir "${pkgdir}"
+  install -Dm644 -t "${pkgdir}/usr/share/licenses/${pkgname}" LICENSE-*
+}
+
+# vim: ts=2 sw=2 et:

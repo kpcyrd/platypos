@@ -1,0 +1,20 @@
+pkgbase = librustls
+	pkgdesc = Use rustls from languages other than Rust
+	pkgver = 0.15.0
+	pkgrel = 1
+	url = https://github.com/rustls/rustls-ffi
+	arch = x86_64
+	license = Apache-2.0
+	license = MIT
+	makedepends = cargo-c
+	makedepends = rust
+	depends = gcc-libs
+	depends = glibc
+	provides = librustls.so
+	provides = rustls-ffi
+	options = !lto
+	source = https://github.com/rustls/rustls-ffi/archive/v0.15.0/librustls-0.15.0.tar.gz
+	sha256sums = db3939a58677e52f03603b332e00347b29aa57aa4012b5f8a7e779ba2934b18b
+	b2sums = 1b45c492fdbb79527d97e8a84143e4435198af095117ba5bdabe8d72d77adf65ba3b59976b3c8510c9d936858e076269d51ccff9ab71d407a916ac58206be8cd
+
+pkgname = librustls

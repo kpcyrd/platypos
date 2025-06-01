@@ -1,0 +1,90 @@
+# Maintainer: Filipe Laíns (ffy00) <lains@archlinux.org>
+# Maintainer: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Maintainer: Orhun Parmaksız <orhun@archlinux.org>
+
+_pkgname=coreutils
+pkgname=$_pkgname-uutils
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Cross-platform Rust rewrite of the GNU coreutils'
+arch=('x86_64')
+url='https://uutils.github.io/'
+_url='https://github.com/uutils/coreutils'
+license=('MIT')
+depends=(
+  gcc-libs
+  glibc 
+  oniguruma
+)
+makedepends=(
+  cargo
+  clang
+  python-sphinx
+  rust
+)
+provides=('coreutils')
+conflicts=('coreutils')
+replaces=('coreutils')
+source=(
+  $pkgname-$pkgver.tar.gz::$_url/archive/$pkgver.tar.gz
+  disable_selinux.patch
+)
+sha512sums=('e9b3941573b2267e6a4b17c49a64d71234e4cbf067f1180fe14bfe48012c9d400741067f6231855a6132f93138eb4bbcb1e970e98c5f937f8d3a5e5bc019f03c'
+            'c1585671d2e0fe34a92746eae291f1be85e65c7ccfe2462cba5d324b8def76296f71b6d15738ecb2683453886de9c0650a0b9a609cad5f03b6ded89e5a91911c')
+options=('!lto')
+
+prepare() {
+  cd $_pkgname-$pkgver
+  sed 's|"bin"|"builduser"|g' -i tests/by-util/test_{chgrp,chown}.rs
+  # disable selinux in Makefile, upstream seems broken in parameter parsing
+  # SELINUX_ENABLE=0 should not enable SELINUX but fails
+  patch -Np1 -i ../disable_selinux.patch
+}
+
+build() {
+  cd $_pkgname-$pkgver
+
+  export RUSTONIG_DYNAMIC_LIBONIG=1
+  make PROFILE=release
+}
+
+check() {
+  cd $_pkgname-$pkgver
+#  make test \
+#    PROFILE=release \
+#    CARGOFLAGS=--release \
+#    TEST_NO_FAIL_FAST="--no-fail-fast -- \
+#        --skip test_chown::test_big_p \
+#        --skip test_chgrp::test_big_p \
+#        --skip test_chgrp::test_big_h \
+#        --skip test_chgrp::test_from_with_invalid_group \
+#        --skip test_who::test_boot"
+}
+
+package() {
+  cd $_pkgname-$pkgver
+
+  make install \
+    DESTDIR="$pkgdir" \
+    PREFIX=/usr \
+    MANDIR=/share/man/man1 \
+    PROFILE=release \
+    MULTICALL=y
+  install -Dm 644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+
+  # fix missing binary names
+  for prog in b2sum b3sum sha224sum sha256sum sha384sum sha512sum; do
+    ln -s coreutils "$pkgdir/usr/bin/$prog"
+  done
+
+  # remove util-linux conflicts
+  rm "$pkgdir"/usr/bin/kill
+  rm "$pkgdir"/usr/bin/more
+  rm "$pkgdir"/usr/bin/uptime
+  rm "$pkgdir"/usr/share/bash-completion/completions/more
+  rm "$pkgdir"/usr/share/man/man1/kill.1.gz
+  rm "$pkgdir"/usr/share/man/man1/more.1.gz
+  rm "$pkgdir"/usr/share/man/man1/uptime.1.gz
+}
+
+# vim: ts=2 sw=2 et:

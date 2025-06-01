@@ -1,0 +1,53 @@
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: Pierre Schmitz <pierre@archlinux.de>
+
+pkgname=cmake
+pkgver=4.0.2
+pkgrel=1
+pkgdesc='A cross-platform open-source make system'
+arch=('x86_64')
+url="https://www.cmake.org/"
+license=('custom')
+depends=(cppdap
+         curl
+         expat
+         gcc-libs
+         glibc
+         jsoncpp
+         libarchive
+         libuv
+         ncurses
+         rhash
+         zlib)
+makedepends=(git
+             nlohmann-json)
+optdepends=(
+  'make: for unix Makefile generator'
+  'ninja: for ninja generator'
+)
+source=(git+https://gitlab.kitware.com/cmake/cmake.git#tag=v$pkgver?signed)
+sha512sums=('59a847a3719d58eaa5117cfd21d89fc7e9c31fa7f2190e85c77abd3560ac4d567b14b85b4b399ec1dccd89ea59104c5d6c1faf5dc4dff17b3f8673b874ca5f1a')
+validpgpkeys=(CBA23971357C2E6590D9EFD3EC8FEF3A7BFB4EDA) # Brad King <brad.king@kitware.com>
+
+prepare() {
+  cd $pkgname
+  git cherry-pick -n a869b79c5921412c91fb71a761748ae5f7d3fb23 # Fix FindHDF5 for HDF5 built with cmake
+}
+
+build() {
+  cd ${pkgname}
+  ./bootstrap --prefix=/usr \
+    --mandir=/share/man \
+    --docdir=/share/doc/cmake \
+    --datadir=/share/cmake \
+    --system-libs \
+    --parallel=$(/usr/bin/getconf _NPROCESSORS_ONLN)
+  make
+}
+
+package() {
+  cd ${pkgname}
+  make DESTDIR="${pkgdir}" install
+  install -Dm644 LICENSE.rst -t "${pkgdir}"/usr/share/licenses/$pkgname
+}
