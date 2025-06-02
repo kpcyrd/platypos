@@ -1,0 +1,77 @@
+# Maintainer: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Maintainer: Dan McGee <dan@archlinux.org>
+
+pkgname=libarchive
+pkgver=3.8.1
+pkgrel=1
+pkgdesc='Multi-format archive and compression library'
+arch=('x86_64')
+url='https://libarchive.org/'
+license=('BSD-2-Clause')
+depends=('acl' 'libacl.so'
+         'bzip2' 'libbz2.so'
+         'glibc'
+         'libxml2' 'libxml2.so'
+         'lz4' 'liblz4.so'
+         'openssl' 'libcrypto.so'
+         'xz' 'liblzma.so'
+         'zlib' 'libz.so'
+         'zstd' 'libzstd.so')
+makedepends=(
+  'autoconf'
+  'automake'
+  'git'
+  'libtool'
+)
+provides=('libarchive.so')
+validpgpkeys=('A5A45B12AD92D964B89EEE2DEC560C81CEC2276E'  # Martin Matuska <mm@FreeBSD.org>
+              'DB2C7CF1B4C265FAEF56E3FC5848A18B8F14184B') # Martin Matuska <martin@matuska.org>
+source=("git+https://github.com/${pkgname}/${pkgname}.git?signed#tag=v${pkgver}")
+sha256sums=('1857fc0288334ba5de7a0e9acbec647f610925c692c513a1a8b2e06dc11035c4')
+
+_backports=(
+)
+
+_reverts=(
+)
+
+prepare() {
+  cd "${pkgname}"
+
+  local _c _l
+  for _c in "${_backports[@]}"; do
+    if [[ "${_c}" == *..* ]]; then _l='--reverse'; else _l='--max-count=1'; fi
+    git log --oneline "${_l}" "${_c}"
+    git cherry-pick --mainline 1 --no-commit "${_c}"
+  done
+  for _c in "${_reverts[@]}"; do
+    if [[ "${_c}" == *..* ]]; then _l='--reverse'; else _l='--max-count=1'; fi
+    git log --oneline "${_l}" "${_c}"
+    git revert --mainline 1 --no-commit "${_c}"
+  done
+
+  autoreconf -fiv
+}
+
+build() {
+  cd "${pkgname}"
+
+  ./configure \
+      --prefix=/usr \
+      --without-nettle \
+      --disable-static
+  make
+}
+
+#check() {
+#  cd "${pkgname}"
+#
+#  make check
+#}
+
+package() {
+  cd "${pkgname}"
+
+  make DESTDIR="$pkgdir" install
+  install -Dm0644 COPYING "$pkgdir/usr/share/licenses/libarchive/COPYING"
+}

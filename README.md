@@ -34,6 +34,9 @@ cargo run --release -- ../os -v -o ../main.db
 The following issues have been identified as part of this project:
 
 - [`uutils/coreutils#8033`](https://github.com/uutils/coreutils/issues/8033) - autotools+audit-userspace fails to `make install` due to multiple `-m` arguments
+- [`uutils/coreutils#8044`](https://github.com/uutils/coreutils/issues/8044) - `mv` tries to follow dangling symlink when destination is a directory
+- [`archlinux/packages/musl#1`](https://gitlab.archlinux.org/archlinux/packaging/packages/musl/-/issues/1) - security patches not correctly applied for x86_64
+- [`sequoia-pgp/sequoia-sq#574`](https://gitlab.com/sequoia-pgp/sequoia-sq/-/issues/574) - can't be compiled with `crypto-rust` backend due to missing feature flag in a dependency
 
 ## License
 

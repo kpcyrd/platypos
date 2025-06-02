@@ -1,0 +1,21 @@
+pkgbase = arch-install-scripts
+	pkgdesc = Scripts to aid in installing Arch Linux
+	pkgver = 29
+	pkgrel = 1
+	url = https://gitlab.archlinux.org/archlinux/arch-install-scripts
+	arch = any
+	license = GPL-2.0-only
+	makedepends = git
+	makedepends = m4
+	makedepends = make
+	depends = awk
+	depends = bash
+	depends = coreutils
+	depends = grep
+	depends = pacman
+	depends = util-linux
+	source = git+https://gitlab.archlinux.org/archlinux/arch-install-scripts.git#tag=v29?signed
+	validpgpkeys = C100346676634E80C940FB9E9C02FF419FECBE16
+	sha256sums = 8b362ae2e24916889f128e08298b010ea5bca4085e45b64105aeb1d212d20600
+
+pkgname = arch-install-scripts

@@ -1,0 +1,15 @@
+pkgbase = miniserve
+	pkgdesc = Tool to serve files via HTTP
+	pkgver = 0.29.0
+	pkgrel = 2
+	url = https://github.com/svenstaro/miniserve
+	arch = x86_64
+	license = MIT
+	makedepends = rust
+	depends = gcc-libs
+	depends = bzip2
+	options = !lto
+	source = miniserve-0.29.0.tar.gz::https://github.com/svenstaro/miniserve/archive/v0.29.0.tar.gz
+	sha512sums = 45fea804ab757d4d9c878cfc2969645783aa1b1b3b2ab8bb7bd3a79e27787658b8f1a75bf9c390ae31c9c0e8e09b55bf3ea87bb154db606241786fa3770974b7
+
+pkgname = miniserve

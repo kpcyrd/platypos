@@ -9,7 +9,11 @@ pkgdesc="A GNU tool for automatically creating Makefiles"
 arch=('any')
 license=('GPL')
 url="https://www.gnu.org/software/automake"
-depends=('perl' 'bash')
+depends=(
+  'bash'
+  'make'
+  'perl'
+)
 makedepends=('autoconf')
 #checkdepends=('dejagnu' 'gcc-fortran' 'java-environment' 'vala' 'emacs' 'cscope'
 #              'expect' 'ncompress' 'gettext' 'lzip' 'zip' 'sharutils' 'help2man'

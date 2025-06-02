@@ -1,0 +1,39 @@
+# Maintainer: Sébastien Luttringer
+
+pkgname=lz4
+epoch=1
+pkgver=1.10.0
+pkgrel=2
+pkgdesc='Extremely fast compression algorithm'
+arch=('x86_64')
+url='https://lz4.github.io/lz4/'
+license=('GPL-2.0-or-later')
+makedepends=(
+  'git'
+  'make'
+)
+checkdepends=('diffutils')
+depends=('glibc')
+provides=('liblz4.so')
+source=("git+https://github.com/lz4/lz4.git#tag=v$pkgver")
+sha256sums=('487f9bc24fdaf589e2f4bb23dd98b1f21a71b643db09251145616587c9468555')
+
+build() {
+  make -C lz4
+}
+
+#check() {
+#  rm -f passwd.lz4
+#  build/meson/programs/lz4 /etc/passwd passwd.lz4
+#  build/meson/programs/lz4 -d passwd.lz4 passwd
+#  diff -q /etc/passwd passwd
+#  rm passwd
+#}
+
+package() {
+  make install -C lz4 \
+    DESTDIR="$pkgdir" \
+    PREFIX=/usr
+}
+
+# vim:set ts=2 sw=2 et:
