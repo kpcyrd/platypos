@@ -7,6 +7,18 @@ pub struct Args {
     /// Increase logging output (can be used multiple times)
     #[arg(short, long, global = true, action(ArgAction::Count))]
     pub verbose: u8,
+    #[command(subcommand)]
+    pub subcommand: SubCommand,
+}
+
+#[derive(Debug, Parser)]
+pub enum SubCommand {
+    Make(Make),
+}
+
+/// Generate package database
+#[derive(Debug, Parser)]
+pub struct Make {
     /// The path to write the database to
     #[arg(short = 'o', long)]
     pub output: PathBuf,
