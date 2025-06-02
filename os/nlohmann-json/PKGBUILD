@@ -1,0 +1,60 @@
+# Maintainer: David Runge <dvzrv@archlinux.org>
+# Maintainer: Jakub Klinkovský <lahwaacz at archlinux dot org>
+
+pkgname=nlohmann-json
+pkgver=3.12.0
+pkgrel=2
+# tests are tracked in a separate repo
+# https://github.com/nlohmann/json_test_data
+_test_pkgver=3.1.0
+pkgdesc="JSON for Modern C++"
+arch=(any)
+url="https://github.com/nlohmann/json"
+license=(MIT)
+makedepends=(
+  cmake
+  git
+)
+source=(
+  $pkgname::git+$url.git#tag=v$pkgver
+  json_test_data-$_test_pkgver.tar.gz::https://github.com/nlohmann/json_test_data/archive/v$_test_pkgver.tar.gz
+)
+sha512sums=('9980bd1a6b39a02a87495564f35e9d6a1d9f359d654c3009040da62ba6ad33747767703c680fe5c7e269887939c0f9a7335b41c7459983e10069925eb9f72347'
+            'db6c411b37f2154f5dd1ed90f4e8fa0907f4a736cd0ff79943bcacf9da422285ff142bb6a7dc6022b236090083166ac1ab197be3f480d8dc50b26a91a9477821')
+b2sums=('06e798f1ae980cf7644ff8712bb3aaff00d32803d5bf47f84b754f291a09ffc3918a321d951e736c0c68329eaa1a7a3f082b5db2a01d949ae7ec4d42f22a4422'
+        '809be0728a0b9d007fcc752911bdf6f7e548d6e3ec59871ea2b16d87d8248ca4dd2f681a1d0f82c618463294188ad41d6d965b8bdc39c70fdcf4b939d4121e9c')
+
+prepare() {
+  cd $pkgname
+  # Provide fallback for missing char8_t support https://github.com/nlohmann/json/pull/4736
+  git cherry-pick --no-commit 34868f90149de02432ea758a29227a6ad74f098c
+}
+
+build() {
+  local cmake_options=(
+    -B build
+    -D BUILD_TESTING=ON
+    -D CMAKE_BUILD_TYPE=None
+    -D CMAKE_INSTALL_PREFIX=/usr
+    -D CMAKE_INSTALL_LIBDIR=/usr/lib
+    -D JSON_BuildTests=OFF
+    -D JSON_TestDataDirectory="$srcdir"/json_test_data-$_test_pkgver/
+    -D JSON_MultipleHeaders=ON
+    -S $pkgname
+    -W no-dev
+  )
+
+  cmake "${cmake_options[@]}"
+  cmake --build build --verbose
+}
+
+check() {
+  :
+  #ctest --test-dir build --output-on-failure
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build
+  install -vDm 644 $pkgname/README.md -t "$pkgdir/usr/share/doc/$pkgname/"
+  install -vDm 644 $pkgname/LICENSE.MIT -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

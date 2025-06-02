@@ -54,6 +54,22 @@ pub struct Pkg {
     pub makedepends: Vec<String>,
 }
 
+impl Pkg {
+    pub fn name(&self) -> Result<&str> {
+        self.name
+            .first()
+            .context("Missing package name")
+            .map(String::as_str)
+    }
+
+    pub fn version(&self) -> Result<&str> {
+        self.version
+            .first()
+            .context("Missing package version")
+            .map(String::as_str)
+    }
+}
+
 type Reader = StreamingDecoder<fs::File, FrameDecoder>;
 
 fn open(dir: &Path, pkg: &srcinfo::Pkg) -> Result<(Meta, tar::Archive<Reader>)> {
@@ -87,7 +103,7 @@ pub fn load(dir: &Path, pkg: &srcinfo::Pkg) -> Result<(Meta, Pkg)> {
             Some(".PKGINFO") => {
                 let mut buf = String::new();
                 entry.read_to_string(&mut buf)?;
-                println!("buf={buf:?}");
+                trace!("buf={buf:?}");
                 pkg = Some(parse(&buf)?);
             }
             // everything else doesn't need processing

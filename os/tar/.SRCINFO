@@ -1,0 +1,17 @@
+pkgbase = tar
+	pkgdesc = Utility used to store, backup, and transport files
+	pkgver = 1.35
+	pkgrel = 2
+	url = https://www.gnu.org/software/tar/
+	arch = x86_64
+	license = GPL3
+	depends = glibc
+	depends = acl
+	options = !emptydirs
+	source = https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz
+	source = https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz.sig
+	validpgpkeys = 325F650C4C2B6AD58807327A3602B07F55D0C732
+	sha256sums = 4d62ff37342ec7aed748535323930c7cf94acf71c3591882b26a7ea50f3edc16
+	sha256sums = SKIP
+
+pkgname = tar

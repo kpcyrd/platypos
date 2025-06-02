@@ -1,0 +1,6 @@
+#!/bin/sh
+osvers="5.12.15-arch1-1"
+myuname="archlinux"
+myhostname="archlinux"
+mydomain='.nonet'
+cf_time="`date -u --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}"`"

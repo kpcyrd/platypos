@@ -1,0 +1,36 @@
+# Maintainer: Morten Linderud <foxboron@archlinux.org>
+# Contributor: Cody P Schafer <archlinux@codyps.com>
+# Contributor: John Eivind Helset <jehelset@gmail.com>
+
+pkgname=debugedit
+pkgver=5.1
+pkgrel=1
+pkgdesc='Tool to mangle source locations in .debug files'
+arch=('x86_64')
+url='https://sourceware.org/debugedit/'
+license=('GPL-3.0-or-later' 'GPL-2.0-or-later' 'LGPL-2.0-or-later')
+depends=('glibc' 'libelf' 'xxhash')
+makedepends=(
+  'autoconf'
+  'automake'
+)
+source=("https://sourceware.org/ftp/debugedit/${pkgver}/debugedit-${pkgver}.tar.xz"{,.sig})
+validpgpkeys=('EC3CFE88F6CA0788774F5C1D1AA44BE649DE760A')
+sha512sums=('72f4dcc0fba223a85d261aa38400e229f04c7c96adafe455919a8f702d3d7d9cdfb991b403d53f2ac4948ca19eeb43d3d49c0ea2616065657c120647a30575d3'
+            'SKIP')
+
+prepare() {
+    cd "debugedit-${pkgver}"
+    autoreconf -fiv
+}
+
+build() {
+    cd "debugedit-${pkgver}"
+    ./configure --prefix=/usr
+    make
+}
+
+package() {
+    cd "debugedit-${pkgver}"
+    make DESTDIR="${pkgdir}" install
+}

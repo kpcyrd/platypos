@@ -1,0 +1,17 @@
+pkgbase = jq
+	pkgdesc = Command-line JSON processor
+	pkgver = 1.8.0
+	pkgrel = 1
+	url = https://jqlang.github.io/jq/
+	arch = x86_64
+	license = MIT
+	makedepends = autoconf
+	makedepends = automake
+	makedepends = bison
+	makedepends = flex
+	depends = glibc
+	depends = oniguruma
+	source = https://github.com/jqlang/jq/releases/download/jq-1.8.0/jq-1.8.0.tar.gz
+	sha512sums = eaa991e43d3fc716dd57f6722a42d4119dcd8ba272eb2fcab882f83efb0b11c10a35c3dc8ad2067f30440dad988d34b5955601499eae1bb9e43db53db02bc4cf
+
+pkgname = jq

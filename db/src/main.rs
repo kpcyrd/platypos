@@ -1,11 +1,13 @@
 pub mod args;
 pub mod db;
+pub mod depends;
 pub mod errors;
 pub mod pkginfo;
 pub mod srcinfo;
 
 use crate::args::Args;
 use crate::db::Database;
+use crate::depends::Depends;
 use crate::errors::*;
 use clap::Parser;
 use env_logger::Env;
@@ -22,6 +24,7 @@ fn main() -> Result<()> {
     env_logger::init_from_env(Env::default().default_filter_or(log_level));
 
     let mut db = Database::default();
+    let mut depends = Depends::default();
     for entry in fs::read_dir(&args.path)? {
         let entry = entry?;
         let path = entry.path();
@@ -39,7 +42,8 @@ fn main() -> Result<()> {
         // read srcinfo
         let srcinfo_path = path.join(".SRCINFO");
         debug!("Reading SRCINFO: {srcinfo_path:?}");
-        let srcinfo = fs::read_to_string(&srcinfo_path)?;
+        let srcinfo = fs::read_to_string(&srcinfo_path)
+            .with_context(|| format!("Failed to read file: {srcinfo_path:?}"))?;
 
         // read pkginfo
         for srcinfo in srcinfo::parse(&srcinfo)? {
@@ -51,6 +55,7 @@ fn main() -> Result<()> {
             let (meta, pkg) = pkginfo::load(&path, &srcinfo)?;
             info!("pkg/pkginfo: {pkg:?}");
             db.insert(&meta, &pkg)?;
+            depends.insert(&pkg);
 
             let filename = srcinfo.filename();
             let src_path = path.join(&filename);
@@ -67,6 +72,8 @@ fn main() -> Result<()> {
         .with_context(|| format!("Failed to open output file: {:?}", output_path))?;
     db.write_into(&mut output)
         .context("Failed to write database")?;
+
+    depends.lint();
 
     Ok(())
 }

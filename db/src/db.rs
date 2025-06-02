@@ -89,9 +89,7 @@ impl Database {
     }
 
     pub fn insert(&mut self, meta: &pkginfo::Meta, pkg: &pkginfo::Pkg) -> Result<()> {
-        let name = pkg.name.first().context("Missing package name")?;
-        let version = pkg.version.first().context("Missing package version")?;
-        let key = format!("{name}-{version}");
+        let key = format!("{}-{}", pkg.name()?, pkg.version()?);
 
         let buf = Self::serialize(meta, pkg)?;
         self.entries.insert(key, buf);
