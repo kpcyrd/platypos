@@ -26,7 +26,7 @@ additional details from the compiled `.pkg.tar.zst` packages.
 
 ```sh
 cd db/
-cargo run --release -- ../os -v -o ../main.db
+cargo run --release -- make ../os -o /var/www/repo/main/os/x86_64/ -A x86_64 -n main -v
 ```
 
 ## Trivia
