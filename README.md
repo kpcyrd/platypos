@@ -4,7 +4,7 @@ This is a toy unix-like project exploring the following:
 
 - Prefer Rust over C when possible
     - Gnu/coreutils replaced with [uutils/coreutils](https://github.com/uutils/coreutils)
-    - OpenSSL partially replaced with [rustls-ffi](https://github.com/rustls/rustls-ffi)
+    - OpenSSL partially replaced with [rustls-ffi](https://github.com/rustls/rustls-ffi) (most prominently in libcurl)
     - [Rust](https://github.com/rust-lang/rust) and [cargo-c](https://github.com/lu-zero/cargo-c) as first-class citizens
     - Tor replaced with [arti](https://gitlab.torproject.org/tpo/core/arti)
     - Nginx replaced with [miniserve](https://github.com/svenstaro/miniserve)
