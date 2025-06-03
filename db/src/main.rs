@@ -22,6 +22,6 @@ fn main() -> Result<()> {
     env_logger::init_from_env(Env::default().default_filter_or(log_level));
 
     match args.subcommand {
-        SubCommand::Make(make) => ops::make::run(&make),
+        SubCommand::Make(make) => ops::make::run(make),
     }
 }

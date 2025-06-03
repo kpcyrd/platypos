@@ -9,6 +9,11 @@ pub struct Depends {
 }
 
 impl Depends {
+    pub fn append(&mut self, other: &mut Self) {
+        self.available.append(&mut other.available);
+        self.needed.append(&mut other.needed);
+    }
+
     fn add_available(&mut self, pkg: &str) {
         let (pkg, _) = pkg.split_once('=').unwrap_or((pkg, ""));
         self.available.insert(pkg.to_string());

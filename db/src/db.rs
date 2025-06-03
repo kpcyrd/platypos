@@ -51,6 +51,10 @@ pub struct Database {
 }
 
 impl Database {
+    pub fn append(&mut self, other: &mut Self) {
+        self.entries.append(&mut other.entries);
+    }
+
     fn serialize(meta: &pkginfo::Meta, pkg: &pkginfo::Pkg) -> Result<String> {
         let csize = meta.compressed_size.to_string();
         let pairs = [
@@ -122,7 +126,7 @@ impl Database {
         let mut tar = tar::Builder::new(gz);
         for (key, value) in &self.entries {
             Self::write_tar_dir(&mut tar, &format!("{key}/"))?;
-            Self::write_tar_data(&mut tar, &format!("{key}/desc"), &value)?;
+            Self::write_tar_data(&mut tar, &format!("{key}/desc"), value)?;
         }
         let gz = tar.into_inner()?;
         let file = gz.finish()?;
