@@ -13,10 +13,12 @@ makedepends=(
   'bash-completion'
   'bison'
   'flex'
+  'gcc'
   'git'
   'libcap-ng'
   'libxcrypt'
   'meson'
+  'pkgconf'
   'sqlite'
   'systemd'
 )
@@ -179,6 +181,11 @@ package_util-linux() {
 
   install -vDm 644 $pkgbase/Documentation/licenses/COPYING.{BSD*,ISC} -t "$pkgdir/usr/share/licenses/$pkgname/"
   install -vDm 644 $pkgbase-BSD-2-Clause.txt -t "$pkgdir/usr/share/licenses/$pkgname/"
+
+  # remove uutils conflicts
+  rm "${pkgdir}/usr/bin/kill"
+  rm "${pkgdir}/usr/bin/more"
+  rm "${pkgdir}/usr/share/bash-completion/completions/more"
 }
 
 package_util-linux-libs() {
