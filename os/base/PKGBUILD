@@ -14,7 +14,7 @@ depends=(
   'filesystem' 'gcc-libs' 'glibc' 'bash'
 
   # POSIX tools
-  'coreutils' 'file' 'findutils' 'gawk' 'grep' 'procps-ng' 'sed' 'tar'
+  'coreutils-uutils' 'file' 'findutils' 'gawk' 'grep' 'procps-ng' 'sed' 'tar'
 
   # standard linux toolset
   'gettext' 'pciutils' 'psmisc' 'shadow' 'util-linux' 'bzip2' 'gzip' 'xz'
