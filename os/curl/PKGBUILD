@@ -5,8 +5,8 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgname=curl
-pkgver=8.14.0
-pkgrel=2
+pkgver=8.14.1
+pkgrel=1
 pkgdesc='command line tool and library for transferring data with URLs'
 arch=('x86_64')
 url='https://curl.se/'
@@ -27,14 +27,9 @@ makedepends=(
 )
 validpgpkeys=('27EDEAF22F3ABCEB50DB9A125CC908FDB71E12C2') # Daniel Stenberg
 source=("git+https://github.com/curl/curl.git#tag=curl-${pkgver//./_}?signed")
-sha512sums=('2d1103904a7e876db02fc42591743c9d51eacaf8a66becd612875f8053102ec207456efeab6ff9f0197ccb516423566355115916991e1eff61499d3031763140')
+sha512sums=('3c63dc98c695413bc9d5c2f7d12de7b635777cb93bc6724f8636c00752a0ccf87c827c5e04b03dba38822e93caca58095c6e0f4bdd83a82e20956a7e7f75c0a4')
 
 _backports=(
-  # multi: fix add_handle resizing
-  'd16ccbd55de80c271fe822f4ba8b6271fd9166ff'
-
-  # http: fail early when rewind of input failed when following redirects
-  '71bb004c29631117ab03d90a4214d1515da5a895'
 )
 
 _reverts=(
