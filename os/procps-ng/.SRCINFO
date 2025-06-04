@@ -1,0 +1,32 @@
+pkgbase = procps-ng
+	pkgdesc = Utilities for monitoring your system and its processes
+	pkgver = 4.0.5
+	pkgrel = 3
+	url = https://gitlab.com/procps-ng/procps
+	arch = x86_64
+	license = GPL
+	license = LGPL
+	makedepends = autoconf
+	makedepends = automake
+	makedepends = gettext
+	makedepends = git
+	makedepends = libtool
+	makedepends = systemd
+	depends = glibc
+	depends = ncurses
+	depends = libncursesw.so
+	depends = systemd-libs
+	provides = procps
+	provides = sysvinit-tools
+	provides = libproc2.so
+	conflicts = procps
+	conflicts = sysvinit-tools
+	replaces = procps
+	replaces = sysvinit-tools
+	options = !emptydirs
+	source = git+https://gitlab.com/procps-ng/procps.git#tag=v4.0.5?signed
+	validpgpkeys = 5D2FB320B825D93904D205193938F96BDF50FEA5
+	sha256sums = 640ad0085ee013efb94877072cfa7c0c025884dc8cc398e331b7efb6ebaefc01
+	b2sums = 4f5d23ecd02434e83896e93840dddbe0896e321c7cb2294a54d280abf03b87302489ef7d99c56476952d1364eb4acfe7715b06b2b56a956373e037b0a273111b
+
+pkgname = procps-ng
