@@ -1,5 +1,5 @@
 # Maintainer: Bert Peters <bertptrs@archlinux.org>
-pkgname=ms-edit
+pkgname=msedit
 pkgver=1.1.0
 pkgrel=1
 pkgdesc="A simple editor for simple needs (Microsoft Edit)"
