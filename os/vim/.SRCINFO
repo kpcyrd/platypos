@@ -10,7 +10,6 @@ pkgbase = vim
 	makedepends = gawk
 	makedepends = git
 	makedepends = glibc
-	makedepends = gpm
 	makedepends = libgcrypt
 	makedepends = zlib
 	source = git+https://github.com/vim/vim.git?signed#tag=v9.1.1376
@@ -25,7 +24,6 @@ pkgbase = vim
 
 pkgname = vim
 	depends = vim-runtime=9.1.1376-1
-	depends = gpm
 	depends = acl
 	depends = glibc
 	depends = libgcrypt

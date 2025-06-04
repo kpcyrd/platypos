@@ -24,7 +24,6 @@ makedepends=(
   gawk
   git
   glibc
-  gpm
   libgcrypt
   zlib
 )
@@ -55,7 +54,7 @@ build() {
       --localstatedir=/var/lib/vim \
       --with-features=huge \
       --with-compiledby='Arch Linux' \
-      --enable-gpm \
+      --disable-gpm \
       --enable-acl \
       --with-x=no \
       --disable-gui \
@@ -67,10 +66,10 @@ build() {
   )
 }
 
-check() {
-  cd vim
-  #TERM=xterm make -j1 test
-}
+#check() {
+#  cd vim
+#  TERM=xterm make -j1 test
+#}
 
 package_vim-runtime() {
   pkgdesc+=' (shared runtime)'
@@ -103,7 +102,7 @@ package_vim-runtime() {
 }
 
 package_vim() {
-  depends=("vim-runtime=${pkgver}-${pkgrel}" 'gpm' 'acl' 'glibc' 'libgcrypt' 'zlib')
+  depends=("vim-runtime=${pkgver}-${pkgrel}" 'acl' 'glibc' 'libgcrypt' 'zlib')
   conflicts=('gvim' 'vim-minimal')
   provides=('xxd' 'vim-minimal' 'vim-plugin-runtime')
   replaces=('vim-minimal')
