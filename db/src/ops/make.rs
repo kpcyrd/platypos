@@ -48,7 +48,17 @@ fn pkgbase(path: &Path, args: &args::Make) -> Result<Option<PkgBase>> {
         let filename = srcinfo.filename();
         let src_path = path.join(&filename);
         let output_path = args.output.join(&filename);
-        if !output_path.exists() {
+
+        let src_metadata = fs::metadata(&src_path)
+            .with_context(|| format!("Failed to read metadata for: {src_path:?}"))?;
+
+        let should_copy = match fs::metadata(&output_path) {
+            Ok(output_metadata) => src_metadata.modified()? > output_metadata.modified()?,
+            Err(_) => true,
+        };
+
+        if should_copy {
+            info!("Copying {src_path:?} to {output_path:?}");
             fs::copy(&src_path, &output_path)
                 .with_context(|| format!("Failed to copy {src_path:?} -> {output_path:?}"))?;
         }
