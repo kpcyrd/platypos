@@ -3,9 +3,26 @@
 {{/inline}}
 {{#*inline "page"}}
 <p><a href="/" class="back">← Back</a></p>
-<p>{{pkg.pkgname}}</p>
-<p>{{pkg.pkgver}}</p>
-<p><a href="https://github.com/kpcyrd/platypos/tree/main/os/{{pkg.pkgname}}">Source</a></p>
-<p><a href="/main/os/x86_64/{{filename pkg}}">Download</a></p>
+<p><b>Name:</b> {{pkg.pkgname}}</p>
+<p><b>Version:</b> {{version pkg}}</p>
+<p><b>Description:</b> {{pkg.pkgdesc}}</p>
+<p><b>Upstream URL:</b> <a href="{{pkg.url}}">{{pkg.url}}</a></p>
+<p><b>Packaging:</b> <a href="https://github.com/kpcyrd/platypos/tree/main/os/{{pkg.pkgname}}">Source</a></p>
+<p><b>Package:</b> <a href="/main/os/x86_64/{{filename pkg}}">Download</a></p>
+<h3>Dependencies</h3>
+<ul>
+    {{#each pkg.depends}}
+    <li>{{this}}</li>
+    {{/each}}
+    {{#each pkg.makedepends}}
+    <li>{{this}} (make)</li>
+    {{/each}}
+</ul>
+<h3>Build Inputs</h3>
+<ul>
+    {{#each sources}}
+    <li><a href="https://whatsrc.org/artifact/{{this.chksum}}">{{this.source}}</a></li>
+    {{/each}}
+</ul>
 {{/inline}}
 {{> base.html.hbs }}

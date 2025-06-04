@@ -52,10 +52,12 @@ impl Html {
     }
 
     pub fn pkg(&self, pkg: &srcinfo::Pkg) -> Result<String> {
+        let sources = pkg.sources();
         self.render(
             "pkg.html.hbs",
             &json!({
                 "pkg": pkg,
+                "sources": sources,
             }),
         )
     }
