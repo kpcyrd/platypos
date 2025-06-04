@@ -12,6 +12,9 @@ pre {
 	padding-top: 15px;
     font-size: 8px;
 }
+.subheadline {
+	font-size: 11px;
+}
 .content {
 	margin: auto;
 	max-width: 600px;
