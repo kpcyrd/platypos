@@ -1,0 +1,36 @@
+# Maintainer: Bert Peters <bertptrs@archlinux.org>
+pkgname=ms-edit
+pkgver=1.1.0
+pkgrel=1
+pkgdesc="A simple editor for simple needs (Microsoft Edit)"
+arch=(x86_64)
+url="https://github.com/microsoft/edit"
+license=('MIT')
+depends=(gcc-libs glibc)
+makedepends=(
+  rust
+  git
+)
+source=("$pkgname::git+$url.git#tag=v$pkgver")
+sha256sums=('5647614858e424e60be2fc173ea4c4c1ccdb742d0502ac679199b2f1a3ea39d3')
+
+prepare() {
+  cd "$pkgname"
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+  cd "$pkgname"
+  RUSTC_BOOTSTRAP=1 cargo build --locked --frozen --release
+}
+
+#check() {
+#  cd "$pkgname"
+#  cargo test --frozen
+#}
+
+package() {
+  cd "$pkgname"
+  install -Dm0755 "target/release/edit" "$pkgdir/usr/bin/$pkgname"
+  install -Dm0644 -t "$pkgdir/usr/share/licenses/$pkgname" "LICENSE"
+}

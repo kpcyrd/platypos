@@ -9,6 +9,7 @@ This is a toy unix-like project exploring the following:
     - Tor replaced with [Arti](https://gitlab.torproject.org/tpo/core/arti)
     - Nginx replaced with [miniserve](https://github.com/svenstaro/miniserve)
     - Gnupg partially replaced with [sequoia-sq](https://gitlab.com/sequoia-pgp/sequoia-sq)
+    - Nano replaced with [msedit](https://github.com/microsoft/edit)
 - Reproducible Builds
 - Contribution through pull requests
 
