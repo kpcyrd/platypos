@@ -19,7 +19,7 @@ depends=(
 makedepends=(
   cargo
   clang
-  python-sphinx
+  make
   rust
 )
 provides=('coreutils')
@@ -48,8 +48,8 @@ build() {
   make PROFILE=release
 }
 
-check() {
-  cd $_pkgname-$pkgver
+#check() {
+#  cd $_pkgname-$pkgver
 #  make test \
 #    PROFILE=release \
 #    CARGOFLAGS=--release \
@@ -59,7 +59,7 @@ check() {
 #        --skip test_chgrp::test_big_h \
 #        --skip test_chgrp::test_from_with_invalid_group \
 #        --skip test_who::test_boot"
-}
+#}
 
 package() {
   cd $_pkgname-$pkgver
@@ -76,15 +76,6 @@ package() {
   for prog in b2sum b3sum sha224sum sha256sum sha384sum sha512sum; do
     ln -s coreutils "$pkgdir/usr/bin/$prog"
   done
-
-  # remove util-linux conflicts
-  rm "$pkgdir"/usr/bin/kill
-  rm "$pkgdir"/usr/bin/more
-  rm "$pkgdir"/usr/bin/uptime
-  rm "$pkgdir"/usr/share/bash-completion/completions/more
-  rm "$pkgdir"/usr/share/man/man1/kill.1.gz
-  rm "$pkgdir"/usr/share/man/man1/more.1.gz
-  rm "$pkgdir"/usr/share/man/man1/uptime.1.gz
 }
 
 # vim: ts=2 sw=2 et:
