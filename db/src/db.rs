@@ -63,6 +63,7 @@ impl Database {
             ("BASE", Value::Many(&pkg.base)),
             ("VERSION", Value::Many(&pkg.version)),
             ("DESC", Value::Many(&pkg.desc)),
+            ("GROUPS", Value::Many(&pkg.groups)),
             ("CSIZE", Value::One(&csize)),
             ("ISIZE", Value::Many(&pkg.size)),
             ("SHA256SUM", Value::One(&meta.sha256)),
@@ -155,6 +156,7 @@ mod tests {
                 base: vec!["util-linux".to_string()],
                 version: vec!["2.41-4".to_string()],
                 desc: vec!["Miscellaneous system utilities for Linux".to_string()],
+                groups: vec![],
                 url: vec!["https://github.com/util-linux/util-linux".to_string()],
                 license: [
                     "BSD-2-Clause",
