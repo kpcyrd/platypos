@@ -1,0 +1,22 @@
+pkgbase = fakeroot
+	pkgdesc = Tool for simulating superuser privileges
+	pkgver = 1.37.1.2
+	pkgrel = 1
+	url = https://tracker.debian.org/pkg/fakeroot
+	install = fakeroot.install
+	arch = x86_64
+	license = GPL-3.0-or-later
+	makedepends = autoconf
+	makedepends = automake
+	makedepends = git
+	makedepends = libtool
+	makedepends = systemd
+	depends = glibc
+	depends = filesystem
+	depends = sed
+	depends = util-linux
+	depends = sh
+	source = git+https://salsa.debian.org/clint/fakeroot.git#tag=upstream/1.37.1.2
+	sha256sums = 41dda8c3dd030b9ee4d159e3f76150b3bef3ecac37ad89e4684b68e41c94159e
+
+pkgname = fakeroot
