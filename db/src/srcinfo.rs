@@ -1,7 +1,8 @@
 use crate::errors::*;
+use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Pkg {
     pub pkgname: String,
     pub pkgver: String,

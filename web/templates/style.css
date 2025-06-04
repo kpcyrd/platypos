@@ -1,0 +1,24 @@
+body {
+	background-color: #1c1c1c;
+	color: #fdfdfd;
+	font-family: monospace;
+}
+pre {
+	margin: auto;
+	display: table;
+	font-size: 10px;
+}
+.logo {
+	padding-top: 15px;
+    font-size: 8px;
+}
+.content {
+	margin: auto;
+	max-width: 600px;
+}
+.center {
+	text-align: center;
+}
+a {
+	color: #2ad02a;
+}

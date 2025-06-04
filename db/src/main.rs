@@ -1,14 +1,7 @@
-pub mod args;
-pub mod db;
-pub mod depends;
-pub mod errors;
-pub mod ops;
-pub mod pkginfo;
-pub mod srcinfo;
-
-use crate::args::{Args, SubCommand};
-use crate::errors::*;
 use clap::Parser;
+use db::args::{Args, SubCommand};
+use db::errors::*;
+use db::ops;
 use env_logger::Env;
 
 fn main() -> Result<()> {

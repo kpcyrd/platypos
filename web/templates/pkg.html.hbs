@@ -1,0 +1,11 @@
+{{#*inline "title"}}
+{{pkg.pkgname}} - ✨
+{{/inline}}
+{{#*inline "page"}}
+<p><a href="/" class="back">← Back</a></p>
+<p>{{pkg.pkgname}}</p>
+<p>{{pkg.pkgver}}</p>
+<p><a href="https://github.com/kpcyrd/platypos/tree/main/os/{{pkg.pkgname}}">Source</a></p>
+<p><a href="/main/os/x86_64/{{filename pkg}}">Download</a></p>
+{{/inline}}
+{{> base.html.hbs }}

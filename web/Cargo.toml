@@ -1,17 +1,15 @@
 [package]
-name = "db"
+name = "web"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 anyhow = "1.0.98"
 clap = { version = "4.5.39", features = ["derive"] }
+db = {path = "../db"}
 env_logger = { version = "0.11.8", default-features = false, features = ["auto-color", "color", "humantime"] }
-flate2 = "1.1.1"
+handlebars = { version = "6.3.2", features = ["rust-embed"] }
 log = "0.4.27"
-num_cpus = "1.17.0"
-ruzstd = "0.8.1"
-serde = { version = "1.0.219", features = ["derive"] }
-sha2 = "0.10.9"
-tar = { version = "0.4.44", default-features = false }
-threadpool = "1.8.1"
+rust-embed = "8.7.2"
+serde = "1.0.219"
+serde_json = "1.0.140"
