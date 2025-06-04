@@ -2,6 +2,7 @@ use crate::assets::Assets;
 use crate::errors::*;
 use db::srcinfo::{self, Pkg};
 use serde_json::json;
+use std::collections::BTreeMap;
 use std::fmt::Write;
 
 pub struct Html {
@@ -42,7 +43,7 @@ impl Html {
         Ok(out)
     }
 
-    pub fn index(&self, pkgs: &[srcinfo::Pkg]) -> Result<String> {
+    pub fn index(&self, pkgs: &BTreeMap<String, srcinfo::Pkg>) -> Result<String> {
         self.render(
             "index.html.hbs",
             &json!({

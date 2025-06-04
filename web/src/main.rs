@@ -9,6 +9,7 @@ use crate::html::Html;
 use clap::Parser;
 use db::srcinfo;
 use env_logger::Env;
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
 
@@ -55,13 +56,15 @@ fn main() -> Result<()> {
     fs::create_dir_all(&args.output)
         .with_context(|| format!("Failed to create output directory: {:?}", args.output))?;
 
-    let mut pkgs = Vec::new();
+    let mut pkgs = BTreeMap::new();
     for entry in fs::read_dir(args.source).context("Failed to read source directory")? {
         let entry = entry?;
         let path = entry.path();
-        let srcinfo =
+        let srcinfos =
             pkgbase(&path).with_context(|| format!("Failed to process pkgbase: {:?}", path))?;
-        pkgs.extend(srcinfo);
+        for srcinfo in srcinfos {
+            pkgs.insert(srcinfo.pkgname.clone(), srcinfo);
+        }
     }
 
     let html = Html::new().with_context(|| "Failed to initialize HTML renderer")?;
@@ -70,7 +73,7 @@ fn main() -> Result<()> {
         .with_context(|| "Failed to write style.css")?;
     write(&args.output.join("assets/style.css"), &html.style()?)
         .with_context(|| "Failed to write style.css")?;
-    for pkg in pkgs {
+    for pkg in pkgs.values() {
         write(
             &args
                 .output
