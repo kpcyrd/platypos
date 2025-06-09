@@ -1,0 +1,40 @@
+pkgname=librash
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Rust system library for cryptographic hashes"
+arch=('x86_64')
+license=('Apache-2.0' 'MIT')
+url='https://github.com/kpcyrd/librash'
+depends=(
+  gcc-libs
+  glibc
+)
+makedepends=(
+  cargo-c
+  rust
+)
+provides=(
+  librash.so
+)
+options=(!lto)
+source=(https://github.com/kpcyrd/librash/archive/v${pkgver}/${pkgname}-${pkgver}.tar.gz)
+sha256sums=('9b6fedd588d0be042505b57c71cf5f7415025f96c0f64885e3349a0d09b5c6dd')
+b2sums=('59db690997bfe8e47039bce56c219090326b5a13c45097bd5f5301facb6f977912b37eb63836fcc853518b051da13bb3015519bf5717db8dc30a5b886834d5a7')
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  cargo cbuild --release --frozen --prefix=/usr
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  cargo cinstall --release --frozen --prefix /usr --destdir "${pkgdir}"
+  install -Dm644 -t "${pkgdir}/usr/share/licenses/${pkgname}" LICENSE-*
+}
+
+# vim: ts=2 sw=2 et:

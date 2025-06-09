@@ -1,0 +1,19 @@
+pkgbase = librash
+	pkgdesc = Rust system library for cryptographic hashes
+	pkgver = 0.1.0
+	pkgrel = 1
+	url = https://github.com/kpcyrd/librash
+	arch = x86_64
+	license = Apache-2.0
+	license = MIT
+	makedepends = cargo-c
+	makedepends = rust
+	depends = gcc-libs
+	depends = glibc
+	provides = librash.so
+	options = !lto
+	source = https://github.com/kpcyrd/librash/archive/v0.1.0/librash-0.1.0.tar.gz
+	sha256sums = 9b6fedd588d0be042505b57c71cf5f7415025f96c0f64885e3349a0d09b5c6dd
+	b2sums = 59db690997bfe8e47039bce56c219090326b5a13c45097bd5f5301facb6f977912b37eb63836fcc853518b051da13bb3015519bf5717db8dc30a5b886834d5a7
+
+pkgname = librash
