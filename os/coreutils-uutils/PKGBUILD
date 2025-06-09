@@ -45,7 +45,7 @@ build() {
   cd $_pkgname-$pkgver
 
   export RUSTONIG_DYNAMIC_LIBONIG=1
-  make PROFILE=release
+  make PROFILE=release MULTICALL=y
 }
 
 #check() {
